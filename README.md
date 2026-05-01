@@ -30,7 +30,7 @@ Once installed, go to **SBF Forms → Settings** and enter:
 
 | Field | Value |
 |---|---|
-| GitHub username | Your GitHub username |
+| GitHub username | Your GitHub username or `SixByFive` to recieve updates from us |
 | GitHub repository | `SixByFive-Forms` (or your fork name) |
 | GitHub token | Only required for private repositories |
 
