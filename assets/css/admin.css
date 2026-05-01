@@ -1,0 +1,53 @@
+/* ── Admin wrap ──────────────────────────────────────────────────────────────── */
+.sbf-admin .sbf-table { margin-top: 0.5rem; }
+
+/* ── New row highlight ───────────────────────────────────────────────────────── */
+.sbf-table .sbf-row--new td { border-left: 3px solid #D4952A; }
+.sbf-table .sbf-row--new td:first-child { border-left: none; }
+
+/* ── Time ────────────────────────────────────────────────────────────────────── */
+.sbf-time   { color: #999; font-size: 0.8rem; }
+.sbf-org    { color: #666; font-size: 0.82rem; }
+.sbf-phone  { color: #888; font-size: 0.82rem; }
+
+/* ── Message preview ─────────────────────────────────────────────────────────── */
+.sbf-message-preview { color: #444; font-size: 0.85rem; }
+.sbf-details summary {
+  font-size: 0.75rem;
+  color: #D4952A;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.sbf-details p {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: #333;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ── Status badges ───────────────────────────────────────────────────────────── */
+.sbf-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sbf-badge--new      { background: rgba(212,149,42,0.15); color: #a06b10; }
+.sbf-badge--read     { background: rgba(127,181,208,0.15); color: #2a6f8a; }
+.sbf-badge--actioned { background: rgba(107,166,138,0.15); color: #2e6b50; }
+.sbf-badge--archived { background: rgba(13,27,42,0.08);   color: #666; }
+
+/* ── Action links ────────────────────────────────────────────────────────────── */
+.sbf-actions { white-space: nowrap; }
+.sbf-action-link {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: #2271b1;
+  margin-right: 0.5rem;
+  text-decoration: none;
+}
+.sbf-action-link:hover { color: #D4952A; text-decoration: underline; }

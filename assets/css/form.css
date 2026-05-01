@@ -1,0 +1,185 @@
+/* ── Wrap ────────────────────────────────────────────────────────────────────── */
+.sbf-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.sbf-title {
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--navy, #0D1B2A);
+  margin: 0 0 0.4rem;
+}
+.sbf-subtitle {
+  font-size: 1rem;
+  color: rgba(13,27,42,0.55);
+  margin: 0 0 2rem;
+}
+
+/* ── Form layout ─────────────────────────────────────────────────────────────── */
+.sbf-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.sbf-row--2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+/* ── Fields ──────────────────────────────────────────────────────────────────── */
+.sbf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.sbf-field label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy, #0D1B2A);
+}
+.sbf-req {
+  color: var(--rose, #C4687A);
+}
+.sbf-field input,
+.sbf-field select,
+.sbf-field textarea {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--navy, #0D1B2A);
+  background: #ffffff;
+  border: 1.5px solid rgba(13,27,42,0.15);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.sbf-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230D1B2A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+.sbf-field input:focus,
+.sbf-field select:focus,
+.sbf-field textarea:focus {
+  border-color: var(--gold, #D4952A);
+  box-shadow: 0 0 0 3px rgba(212,149,42,0.12);
+}
+.sbf-field input.sbf-error,
+.sbf-field select.sbf-error,
+.sbf-field textarea.sbf-error {
+  border-color: var(--rose, #C4687A);
+  box-shadow: 0 0 0 3px rgba(196,104,122,0.1);
+}
+.sbf-field textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+/* ── Consent checkbox ────────────────────────────────────────────────────────── */
+.sbf-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+.sbf-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(13,27,42,0.25);
+  accent-color: var(--gold, #D4952A);
+  margin-top: 2px;
+  cursor: pointer;
+}
+.sbf-checkbox span {
+  font-size: 0.82rem;
+  color: rgba(13,27,42,0.6);
+  line-height: 1.6;
+}
+.sbf-checkbox a {
+  color: var(--gold, #D4952A);
+}
+
+/* ── Submit ───────────────────────────────────────────────────────────────────── */
+.sbf-submit-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.sbf-btn {
+  padding: 0.95rem 2.4rem;
+  background: var(--gold, #D4952A);
+  color: var(--navy, #0D1B2A);
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+  box-shadow: 0 4px 20px rgba(212,149,42,0.3);
+}
+.sbf-btn:hover {
+  background: var(--gold-lt, #F0C96A);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212,149,42,0.35);
+}
+.sbf-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Status message ──────────────────────────────────────────────────────────── */
+.sbf-status {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.9rem 1.2rem;
+  border-radius: 8px;
+  display: none;
+}
+.sbf-status.sbf-status--success {
+  display: block;
+  background: rgba(107,166,138,0.12);
+  color: #3a7a5a;
+  border: 1px solid rgba(107,166,138,0.3);
+}
+.sbf-status.sbf-status--error {
+  display: block;
+  background: rgba(196,104,122,0.1);
+  color: #a0364a;
+  border: 1px solid rgba(196,104,122,0.25);
+}
+
+/* ── On dark backgrounds ─────────────────────────────────────────────────────── */
+.sbf-dark .sbf-title { color: var(--cream, #F9F6F0); }
+.sbf-dark .sbf-subtitle { color: rgba(249,246,240,0.55); }
+.sbf-dark .sbf-field label { color: rgba(249,246,240,0.7); }
+.sbf-dark .sbf-field input,
+.sbf-dark .sbf-field select,
+.sbf-dark .sbf-field textarea {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(249,246,240,0.15);
+  color: var(--cream, #F9F6F0);
+}
+.sbf-dark .sbf-field input::placeholder,
+.sbf-dark .sbf-field textarea::placeholder { color: rgba(249,246,240,0.3); }
+.sbf-dark .sbf-checkbox span { color: rgba(249,246,240,0.5); }
+
+/* ── Responsive ──────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .sbf-row--2 { grid-template-columns: 1fr; }
+}
