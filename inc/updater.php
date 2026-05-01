@@ -128,10 +128,10 @@ class SBF_GitHub_Updater {
             'name'          => 'SixByFive Forms',
             'slug'          => dirname( $this->plugin_slug ),
             'version'       => $this->clean_version( $release->tag_name ),
-            'author'        => '<a href="https://sixbyfive.co.uk">FalconChipp</a>',
+            'author'        => '<a href="https://dev.sixbyfive.co.uk">SixByFive</a>',
             'homepage'      => "https://github.com/{$this->github_user}/{$this->github_repo}",
             'requires'      => '6.4',
-            'tested'        => '6.7',
+            'tested'        => '6.9.4',
             'last_updated'  => $release->published_at ?? '',
             'download_link' => $release->zipball_url,
             'sections'      => [
