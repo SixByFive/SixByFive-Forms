@@ -1,6 +1,51 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// ── Handle actions before any output ─────────────────────────────────────────
+add_action( 'admin_init', function () {
+    if (
+        ! isset( $_GET['page'] ) ||
+        $_GET['page'] !== 'sbf-enquiries' ||
+        ! current_user_can( 'manage_options' )
+    ) {
+        return;
+    }
+
+    global $wpdb;
+    $table = sbf_get_table();
+
+    // Status update
+    if (
+        isset( $_GET['sbf_action'], $_GET['id'], $_GET['_wpnonce'] ) &&
+        wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'sbf_status' )
+    ) {
+        $allowed = [ 'new', 'read', 'actioned', 'archived' ];
+        $status  = sanitize_text_field( wp_unslash( $_GET['sbf_action'] ) );
+        $id      = absint( $_GET['id'] );
+
+        if ( in_array( $status, $allowed, true ) && $id ) {
+            $wpdb->update( $table, [ 'status' => $status ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
+        }
+
+        wp_safe_redirect( admin_url( 'admin.php?page=sbf-enquiries&updated=1' ) );
+        exit;
+    }
+
+    // Bulk delete
+    if (
+        isset( $_POST['sbf_bulk'], $_POST['ids'], $_POST['_wpnonce'] ) &&
+        wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'sbf_bulk' ) &&
+        $_POST['sbf_bulk'] === 'delete'
+    ) {
+        $ids = array_map( 'absint', (array) $_POST['ids'] );
+        foreach ( $ids as $id ) {
+            $wpdb->delete( $table, [ 'id' => $id ], [ '%d' ] );
+        }
+        wp_safe_redirect( admin_url( 'admin.php?page=sbf-enquiries&deleted=' . count( $ids ) ) );
+        exit;
+    }
+} );
+
 // ── Register menu ─────────────────────────────────────────────────────────────
 add_action( 'admin_menu', function () {
     add_menu_page(
@@ -63,37 +108,6 @@ function sbf_admin_page(): void {
     global $wpdb;
     $table = sbf_get_table();
 
-    // Handle status update
-    if (
-        isset( $_GET['sbf_action'], $_GET['id'], $_GET['_wpnonce'] ) &&
-        wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'sbf_status' )
-    ) {
-        $allowed = [ 'new', 'read', 'actioned', 'archived' ];
-        $status  = sanitize_text_field( wp_unslash( $_GET['sbf_action'] ) );
-        $id      = absint( $_GET['id'] );
-
-        if ( in_array( $status, $allowed, true ) && $id ) {
-            $wpdb->update( $table, [ 'status' => $status ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
-        }
-
-        wp_safe_redirect( admin_url( 'admin.php?page=sbf-enquiries&updated=1' ) );
-        exit;
-    }
-
-    // Handle bulk delete
-    if (
-        isset( $_POST['sbf_bulk'], $_POST['ids'], $_POST['_wpnonce'] ) &&
-        wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'sbf_bulk' ) &&
-        $_POST['sbf_bulk'] === 'delete'
-    ) {
-        $ids = array_map( 'absint', (array) $_POST['ids'] );
-        foreach ( $ids as $id ) {
-            $wpdb->delete( $table, [ 'id' => $id ], [ '%d' ] );
-        }
-        wp_safe_redirect( admin_url( 'admin.php?page=sbf-enquiries&deleted=' . count( $ids ) ) );
-        exit;
-    }
-
     // Filters
     $status_filter = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
     $search        = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
@@ -136,7 +150,8 @@ function sbf_admin_page(): void {
     ?>
 
     <div class="wrap sbf-admin">
-        <h1 class="wp-heading-inline">SixByFive Forms — Enquiries</h1>
+        <h1>SixByFive Forms — Enquiries</h1>
+        <hr class="wp-header-end">
 
         <?php if ( ! empty( $_GET['updated'] ) ) : ?>
             <div class="notice notice-success is-dismissible"><p>Enquiry updated.</p></div>
@@ -148,7 +163,7 @@ function sbf_admin_page(): void {
         <!-- Status tabs -->
         <ul class="subsubsub">
             <?php
-            $tabs = [ 'all' => 'All', 'new' => 'New', 'read' => 'Read', 'actioned' => 'Actioned', 'archived' => 'Archived' ];
+            $tabs  = [ 'all' => 'All', 'new' => 'New', 'read' => 'Read', 'actioned' => 'Actioned', 'archived' => 'Archived' ];
             $links = [];
             foreach ( $tabs as $slug => $label ) {
                 $url     = admin_url( 'admin.php?page=sbf-enquiries' . ( $slug !== 'all' ? '&status=' . $slug : '' ) );
@@ -215,9 +230,9 @@ function sbf_admin_page(): void {
                 <?php if ( empty( $rows ) ) : ?>
                     <tr><td colspan="8" style="text-align:center;padding:2rem;color:#999;">No enquiries found.</td></tr>
                 <?php else : foreach ( $rows as $row ) :
-                    $is_new   = $row->status === 'new';
+                    $is_new    = $row->status === 'new';
                     $row_class = $is_new ? 'sbf-row--new' : '';
-                    $nonce    = wp_create_nonce( 'sbf_status' );
+                    $nonce     = wp_create_nonce( 'sbf_status' );
                     ?>
                     <tr class="<?php echo esc_attr( $row_class ); ?>">
                         <td><input type="checkbox" name="ids[]" value="<?php echo absint( $row->id ); ?>" /></td>
@@ -259,8 +274,30 @@ function sbf_admin_page(): void {
                     </tr>
                 <?php endforeach; endif; ?>
                 </tbody>
+                <tr>
+                    <th><label for="sbf_github_user">GitHub username</label></th>
+                    <td>
+                        <input type="text" id="sbf_github_user" name="sbf_github_user" class="regular-text"
+                            value="<?php echo esc_attr( get_option( 'sbf_github_user', 'SixByFive' ) ); ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sbf_github_repo">GitHub repository</label></th>
+                    <td>
+                        <input type="text" id="sbf_github_repo" name="sbf_github_repo" class="regular-text"
+                            value="<?php echo esc_attr( get_option( 'sbf_github_repo', 'SixByFive-Forms' ) ); ?>" />
+                        <p class="description">Repository name only, not the full URL.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sbf_github_token">GitHub token</label></th>
+                    <td>
+                        <input type="password" id="sbf_github_token" name="sbf_github_token" class="regular-text"
+                            value="<?php echo esc_attr( get_option( 'sbf_github_token', '' ) ); ?>" />
+                        <p class="description">Only required for private repositories. Generate at GitHub → Settings → Developer settings → Personal access tokens.</p>
+                    </td>
+                </tr>
             </table>
-
         </form>
     </div>
 
