@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SixByFive Forms
  * Description: Enquiry form with custom DB storage, admin screen, email notifications and spam protection.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: SixByFive
  * Author URI: https://dev.sixbyfive.co.uk
  * Text Domain: sbf
@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SBF_VERSION', '1.1.2' );
+define( 'SBF_VERSION', '1.1.3' );
 define( 'SBF_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SBF_URL',     plugin_dir_url( __FILE__ ) );
 define( 'SBF_TABLE',   'sbf_enquiries' );
