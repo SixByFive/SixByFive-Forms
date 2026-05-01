@@ -54,7 +54,7 @@ add_action( 'admin_menu', function () {
         'manage_options',
         'sbf-enquiries',
         'sbf_admin_page',
-        'dashicons-email-alt',
+        SBF_URL . 'assets/images/sbf-forms-icon-128.png',
         30
     );
     add_submenu_page(

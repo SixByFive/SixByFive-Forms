@@ -100,7 +100,10 @@ class SBF_GitHub_Updater {
                 'new_version' => $new_version,
                 'url'         => "https://github.com/{$this->github_user}/{$this->github_repo}",
                 'package'     => $release->zipball_url,
-                'icons'       => [],
+                'icons'       => [
+                    '1x' => plugins_url( 'assets/images/sbf-forms-icon-128.png', $this->plugin_file ),
+                    '2x' => plugins_url( 'assets/images/sbf-forms-logo.png', $this->plugin_file ),
+                ],
                 'banners'     => [],
             ];
         }
