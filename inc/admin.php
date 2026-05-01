@@ -344,19 +344,20 @@ function sbf_settings_page(): void {
             </table>
 
             <h2 class="title">GitHub auto-updates</h2>
+            <p>By default, updates are delivered directly from SixByFive. You can point this to your own fork if you maintain a custom version.</p>
             <table class="form-table">
                 <tr>
                     <th><label for="sbf_github_user">GitHub username</label></th>
                     <td>
                         <input type="text" id="sbf_github_user" name="sbf_github_user" class="regular-text"
-                            value="<?php echo esc_attr( get_option( 'sbf_github_user', '' ) ); ?>" />
+                            value="<?php echo esc_attr( get_option( 'sbf_github_user', 'SixByFive' ) ); ?>" />
                     </td>
                 </tr>
                 <tr>
                     <th><label for="sbf_github_repo">GitHub repository</label></th>
                     <td>
                         <input type="text" id="sbf_github_repo" name="sbf_github_repo" class="regular-text"
-                            value="<?php echo esc_attr( get_option( 'sbf_github_repo', '' ) ); ?>" />
+                            value="<?php echo esc_attr( get_option( 'sbf_github_repo', 'SixByFive-Forms' ) ); ?>" />
                         <p class="description">Repository name only — not the full URL.</p>
                     </td>
                 </tr>
