@@ -274,29 +274,6 @@ function sbf_admin_page(): void {
                     </tr>
                 <?php endforeach; endif; ?>
                 </tbody>
-                <tr>
-                    <th><label for="sbf_github_user">GitHub username</label></th>
-                    <td>
-                        <input type="text" id="sbf_github_user" name="sbf_github_user" class="regular-text"
-                            value="<?php echo esc_attr( get_option( 'sbf_github_user', 'SixByFive' ) ); ?>" />
-                    </td>
-                </tr>
-                <tr>
-                    <th><label for="sbf_github_repo">GitHub repository</label></th>
-                    <td>
-                        <input type="text" id="sbf_github_repo" name="sbf_github_repo" class="regular-text"
-                            value="<?php echo esc_attr( get_option( 'sbf_github_repo', 'SixByFive-Forms' ) ); ?>" />
-                        <p class="description">Repository name only, not the full URL.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th><label for="sbf_github_token">GitHub token</label></th>
-                    <td>
-                        <input type="password" id="sbf_github_token" name="sbf_github_token" class="regular-text"
-                            value="<?php echo esc_attr( get_option( 'sbf_github_token', '' ) ); ?>" />
-                        <p class="description">Only required for private repositories. Generate at GitHub → Settings → Developer settings → Personal access tokens.</p>
-                    </td>
-                </tr>
             </table>
         </form>
     </div>
@@ -315,9 +292,12 @@ function sbf_settings_page(): void {
         isset( $_POST['sbf_settings_nonce'] ) &&
         wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sbf_settings_nonce'] ) ), 'sbf_settings' )
     ) {
-        update_option( 'sbf_notify_email', sanitize_email( wp_unslash( $_POST['sbf_notify_email'] ?? '' ) ) );
-        update_option( 'sbf_from_name',    sanitize_text_field( wp_unslash( $_POST['sbf_from_name']    ?? '' ) ) );
-        update_option( 'sbf_from_email',   sanitize_email( wp_unslash( $_POST['sbf_from_email']   ?? '' ) ) );
+        update_option( 'sbf_notify_email',  sanitize_email( wp_unslash( $_POST['sbf_notify_email']  ?? '' ) ) );
+        update_option( 'sbf_from_name',     sanitize_text_field( wp_unslash( $_POST['sbf_from_name']     ?? '' ) ) );
+        update_option( 'sbf_from_email',    sanitize_email( wp_unslash( $_POST['sbf_from_email']    ?? '' ) ) );
+        update_option( 'sbf_github_user',   sanitize_text_field( wp_unslash( $_POST['sbf_github_user']   ?? '' ) ) );
+        update_option( 'sbf_github_repo',   sanitize_text_field( wp_unslash( $_POST['sbf_github_repo']   ?? '' ) ) );
+        update_option( 'sbf_github_token',  sanitize_text_field( wp_unslash( $_POST['sbf_github_token']  ?? '' ) ) );
         echo '<div class="notice notice-success is-dismissible"><p>Settings saved.</p></div>';
     }
     ?>
@@ -346,6 +326,33 @@ function sbf_settings_page(): void {
                     <td>
                         <input type="email" id="sbf_from_email" name="sbf_from_email" class="regular-text"
                             value="<?php echo esc_attr( get_option( 'sbf_from_email', get_option( 'admin_email' ) ) ); ?>" />
+                    </td>
+                </tr>
+            </table>
+
+            <h2 class="title">GitHub auto-updates</h2>
+            <table class="form-table">
+                <tr>
+                    <th><label for="sbf_github_user">GitHub username</label></th>
+                    <td>
+                        <input type="text" id="sbf_github_user" name="sbf_github_user" class="regular-text"
+                            value="<?php echo esc_attr( get_option( 'sbf_github_user', '' ) ); ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sbf_github_repo">GitHub repository</label></th>
+                    <td>
+                        <input type="text" id="sbf_github_repo" name="sbf_github_repo" class="regular-text"
+                            value="<?php echo esc_attr( get_option( 'sbf_github_repo', '' ) ); ?>" />
+                        <p class="description">Repository name only — not the full URL.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sbf_github_token">GitHub token</label></th>
+                    <td>
+                        <input type="password" id="sbf_github_token" name="sbf_github_token" class="regular-text"
+                            value="<?php echo esc_attr( get_option( 'sbf_github_token', '' ) ); ?>" />
+                        <p class="description">Only required for private repositories. Generate at GitHub → Settings → Developer settings → Personal access tokens.</p>
                     </td>
                 </tr>
             </table>
