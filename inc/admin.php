@@ -54,7 +54,7 @@ add_action( 'admin_menu', function () {
         'manage_options',
         'sbf-enquiries',
         'sbf_admin_page',
-        SBF_URL . 'assets/images/sbf-forms-icon-128.png',
+        'data:image/svg+xml;base64,' . base64_encode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="10,14 2,4 18,4" fill="#a7aaad"/><rect x="2" y="15" width="16" height="2" rx="1" fill="#a7aaad"/></svg>' ),
         30
     );
     add_submenu_page(
@@ -74,6 +74,19 @@ add_action( 'admin_menu', function () {
         'sbf_settings_page'
     );
 } );
+
+// ── Plugin row meta links ─────────────────────────────────────────────────────
+add_filter( 'plugin_row_meta', function ( array $links, string $file ): array {
+    if ( plugin_basename( SBF_DIR . 'sixbyfive-forms.php' ) !== $file ) {
+        return $links;
+    }
+
+    $links[] = '<a href="' . admin_url( 'admin.php?page=sbf-enquiries' ) . '">View enquiries</a>';
+    $links[] = '<a href="' . admin_url( 'admin.php?page=sbf-settings' ) . '">Settings</a>';
+    $links[] = '<a href="https://github.com/' . esc_attr( get_option( 'sbf_github_user', 'SixByFive' ) ) . '/' . esc_attr( get_option( 'sbf_github_repo', 'SixByFive-Forms' ) ) . '" target="_blank">GitHub</a>';
+
+    return $links;
+}, 10, 2 );
 
 // ── Enqueue admin styles ──────────────────────────────────────────────────────
 add_action( 'admin_enqueue_scripts', function ( string $hook ) {
