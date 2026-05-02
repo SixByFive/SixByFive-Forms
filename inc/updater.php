@@ -28,6 +28,8 @@ class SBF_GitHub_Updater {
         add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'check_update' ] );
         add_filter( 'plugins_api',                           [ $this, 'plugin_info' ], 10, 3 );
         add_filter( 'upgrader_source_selection',             [ $this, 'fix_source_dir' ], 10, 4 );
+        add_action( 'wp_update_plugins',                     [ $this, 'flush_cache' ] );
+        add_filter( 'http_request_args',                     [ $this, 'inject_token' ], 10, 2 );
     }
 
     // ── Fetch latest release from GitHub ──────────────────────────────────────
@@ -77,6 +79,18 @@ class SBF_GitHub_Updater {
 
     private function clean_version( string $tag ): string {
         return ltrim( $tag, 'vV' );
+    }
+
+    public function inject_token( array $args, string $url ): array {
+        if ( $this->token && str_contains( $url, 'api.github.com/repos/' . $this->github_user . '/' . $this->github_repo ) ) {
+            $args['headers']['Authorization'] = 'Bearer ' . $this->token;
+        }
+        return $args;
+    }
+
+    public function flush_cache(): void {
+        delete_transient( 'sbf_gh_release_' . md5( $this->github_user . $this->github_repo ) );
+        $this->release = null;
     }
 
     // ── Inject into WordPress update transient ────────────────────────────────
