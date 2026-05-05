@@ -28,8 +28,8 @@ class SBF_GitHub_Updater {
         add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'check_update' ] );
         add_filter( 'plugins_api',                           [ $this, 'plugin_info' ], 10, 3 );
         add_filter( 'upgrader_source_selection',             [ $this, 'fix_source_dir' ], 10, 4 );
-        add_action( 'wp_update_plugins',                     [ $this, 'flush_cache' ] );
         add_filter( 'http_request_args',                     [ $this, 'inject_token' ], 10, 2 );
+        add_action( 'admin_init',                            [ $this, 'maybe_flush_cache' ] );
     }
 
     // ── Fetch latest release from GitHub ──────────────────────────────────────
@@ -38,12 +38,15 @@ class SBF_GitHub_Updater {
             return $this->release;
         }
 
-        $cache_key = 'sbf_gh_release_' . md5( $this->github_user . $this->github_repo );
-        $cached    = get_transient( $cache_key );
+        $cache_key   = 'sbf_gh_release_' . md5( $this->github_user . $this->github_repo );
+        $force_check = isset( $_GET['force-check'] );
 
-        if ( $cached !== false ) {
-            $this->release = $cached;
-            return $this->release;
+        if ( ! $force_check ) {
+            $cached = get_transient( $cache_key );
+            if ( $cached !== false ) {
+                $this->release = $cached;
+                return $this->release;
+            }
         }
 
         $url  = "https://api.github.com/repos/{$this->github_user}/{$this->github_repo}/releases/latest";
@@ -91,6 +94,14 @@ class SBF_GitHub_Updater {
     public function flush_cache(): void {
         delete_transient( 'sbf_gh_release_' . md5( $this->github_user . $this->github_repo ) );
         $this->release = null;
+    }
+
+    public function maybe_flush_cache(): void {
+        if ( isset( $_GET['force-check'] ) && current_user_can( 'update_plugins' ) ) {
+            $this->flush_cache();
+            // Also clear WordPress's own update cache so it re-runs the check
+            delete_site_transient( 'update_plugins' );
+        }
     }
 
     // ── Inject into WordPress update transient ────────────────────────────────

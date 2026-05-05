@@ -93,9 +93,14 @@
   cursor: pointer;
 }
 .sbf-checkbox input[type="checkbox"] {
+  /* Reset the generic .sbf-field input rules that break checkboxes */
+  appearance: auto;
+  -webkit-appearance: auto;
   width: 18px;
   height: 18px;
   min-width: 18px;
+  padding: 0;
+  background: #fff;
   border-radius: 4px;
   border: 1.5px solid rgba(13,27,42,0.25);
   accent-color: var(--gold, #D4952A);
