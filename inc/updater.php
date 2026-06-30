@@ -124,7 +124,7 @@ class SBF_GitHub_Updater {
                 'plugin'      => $this->plugin_slug,
                 'new_version' => $new_version,
                 'url'         => "https://github.com/{$this->github_user}/{$this->github_repo}",
-                'package'     => $release->zipball_url,
+                'package'     => $this->asset_zip_url( $release ),
                 'icons'       => [
                     '1x' => plugins_url( 'assets/images/sbf-forms-icon-128.png', $this->plugin_file ),
                     '2x' => plugins_url( 'assets/images/sbf-forms-logo.png', $this->plugin_file ),
@@ -161,7 +161,7 @@ class SBF_GitHub_Updater {
             'requires'      => '6.4',
             'tested'        => '6.9.4',
             'last_updated'  => $release->published_at ?? '',
-            'download_link' => $release->zipball_url,
+            'download_link' => $this->asset_zip_url( $release ),
             'sections'      => [
                 'description' => 'Enquiry form with custom DB storage, admin screen, email notifications and spam protection.',
                 'changelog'   => ! empty( $release->body )
@@ -169,6 +169,20 @@ class SBF_GitHub_Updater {
                     : '<p>See <a href="https://github.com/' . esc_attr( $this->github_user ) . '/' . esc_attr( $this->github_repo ) . '/releases">GitHub releases</a>.</p>',
             ],
         ];
+    }
+
+    // ── Prefer attached release asset over auto-generated zipball ────────────
+    // GitHub's zipball extracts to a random folder name; the attached asset zip
+    // uses the correct plugin slug as the top-level directory.
+    private function asset_zip_url( object $release ): string {
+        if ( ! empty( $release->assets ) ) {
+            foreach ( $release->assets as $asset ) {
+                if ( str_ends_with( $asset->name, '.zip' ) ) {
+                    return $asset->browser_download_url;
+                }
+            }
+        }
+        return $release->zipball_url;
     }
 
     // ── Rename GitHub's extracted zip folder to match the plugin slug ─────────
